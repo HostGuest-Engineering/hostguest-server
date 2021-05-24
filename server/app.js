@@ -1,24 +1,26 @@
 const express = require('express');
-const {
-    ApolloServer,
-} = require('apollo-server-express');
+const {ApolloServer} = require('apollo-server-express');
 const cors = require('cors');
-// const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const path = require('path');
 const cookieParser = require("cookie-parser");
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const helmet = require('helmet');
-//const Logger = require('./utils/logger');
 const expressJwt = require('express-jwt');
 const app = express();
-const {Session} = require("./controllers");
+const {Session,Users} = require("./controllers");
 const UserModel = require('./datasources/Users/UserModel');
+const makeUploadsDir = require('./utils/createFolder');
 
 require('dotenv').config();
 const configValues = process.env;
 
+//create uploads dir if none exist
+const uploadsDir = `${process.cwd()}/uploads`;
+makeUploadsDir(uploadsDir);
+app.use(express.static(path.join(process.cwd(),'uploads')));
 const listOfOriginsAllowed = process.env.ORIGIN.split(',');
 
 const options = {
@@ -48,21 +50,8 @@ app.use(helmet({
                 useNewUrlParser: true,
                 useUnifiedTopology: true
             });
-            // Logger.log(
-            //     'info',
-            //     'Success', {
-            //         message: 'Connected successfully to our datasource'
-            //     }
-            // )
             console.log('Connected successfully to our datasource');
         } catch (e) {
-            // Logger.log(
-            //     'error',
-            //     'Error', {
-            //         message: e.message
-            //     }
-            // )
-
             throw new Error('Could not connect, please contact us if problem persists');
         }
     }
@@ -75,25 +64,6 @@ app.use(expressJwt({
     getToken: req => req.cookies.host,
     credentialsRequired:false
 }))
-// passport.use(new GoogleStrategy({
-//     clientID: process.env.GOOGLE_CLIENT_ID,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//     // callbackURL: "http://localhost:5002/success"
-// }, (accessToken, refreshToken, profile, done) => {
-//     console.log(profile)
-//     done(null, {
-//         accessToken,
-//         refreshToken,
-//         profile,
-//     })
-// }));
-// app.use(passport.initialize());
-// app.get('/login',passport.authenticate('google',{ scope: ['profile'],session:false }));
-// app.get('/success', passport.authenticate('google', {
-//             session: false
-//         }), (req, res) => {
-//     res.send('succussful')
-// })
 
 const server = new ApolloServer({
     typeDefs,
@@ -101,6 +71,7 @@ const server = new ApolloServer({
     dataSources: () => {
        return { 
            sessionApi:new Session(),
+           userApi:new Users()
         }
     },
     context:async({req,connection,res})=>{

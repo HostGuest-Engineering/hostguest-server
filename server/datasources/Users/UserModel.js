@@ -27,6 +27,22 @@ const UserSchema = new Schema({
             token:String
         }
     },
+    picture:{
+        type:String
+    },
+    host:{
+        type:Number,
+        default:0
+    },
+    description:{
+        type:String
+    },
+    location:{
+        type:String
+    },
+    hostBrand:{
+        type:String
+    },
     createdAt:{
         type:Date,
         default:Date.now()

@@ -12,6 +12,13 @@ const typeDefs = gql `
         signIn(input:SignInInput!):AuthResults!
         signUp(input:SignUpInput!):Result
         logOut:AuthResults
+        becomeAHost(input: BecomeHostInput!): Result
+    }
+    input BecomeHostInput{
+        picture: Upload!
+        hostBrand: String!
+        location: String!
+        aboutSelf: String!
     }
     input SignInInput {
         password:String!
