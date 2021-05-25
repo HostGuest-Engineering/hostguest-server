@@ -26,7 +26,6 @@ class Users {
              * lets first upload the image to file system 
              * then cloudinary and the update the user model
              */
-            //console.log(picture,location,aboutSelf,hostBrand)
             const pictureFileName = await Users.getFileNameFromUpload(picture);
             const uploadPath = process.cwd() + "/uploads"
             const pictureUpload = pictureFileName === (null || undefined || "") ? "" : await Users.uploadFileToFileSystem(picture, uploadPath, pictureFileName);
@@ -38,9 +37,8 @@ class Users {
                     crop: 'scale',
                     format: 'jpg'
                 };
-                const userPicturePath = process.cwd()+"/uploads/"+pictureFileName;
+                //const userPicturePath = process.cwd()+"/uploads/"+pictureFileName;
                 const imageUploadResponse = await cloudinary.uploader.upload(`https://f0c5800dab76.ngrok.io/${pictureFileName}`, {tags: "user-profile-pic",eager: eager_options});
-                console.log(imageUploadResponse,found,location,hostBrand);
                 const response = await UserModel.updateOne({_id:found._id},{
                     picture:imageUploadResponse.eager[0].secure_url,
                     host:1,
@@ -48,8 +46,6 @@ class Users {
                     location,
                     hostBrand
                 });
-                console.log(response)
-                // return "Success"
             }).catch(e=>{
                 throw new Error(e.message)
             })
