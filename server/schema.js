@@ -1,9 +1,25 @@
 const {gql} = require("apollo-server-express");
 
 const typeDefs = gql `
+
+    enum ExperiencesCategory{
+        SportsAndHealth
+        MusicAndDance
+        ArtsCraftAndCulture
+        Adventure
+        NightLifeAndParties
+        ImprovMagicAndComedy
+        ScifiAndGames
+        WellnessAndSpirituality
+        FoodAndDrink
+        SocialGood
+        LecturesAndWorkshops
+    }
     type Query{
         simp:Result
         userDetails: [UserDetails]!
+        fetchAllExperiences:Result
+        findExperienceById(id:String):Result
     }
 
     type Mutation{
@@ -13,6 +29,21 @@ const typeDefs = gql `
         signUp(input:SignUpInput!):Result
         logOut:AuthResults
         becomeAHost(input: BecomeHostInput!): Result
+        createExperience(input:CreateExperienceInput!):Result
+        multiUpload(files:[Upload]):Result
+        bookExperience(id:String):Result
+        leaveExperience(id:String):Result
+    }
+    input CreateExperienceInput{
+        nameOfExperience:String!
+        descriptionOfExperience:String!
+        numberOfPeopleAllowed:Int!
+        price:String!
+        imagesOfExperience:[Upload]
+        duration:String!
+        category:ExperiencesCategory!
+        userBrings:[String]
+        datesOfExperience:[String]!
     }
     input BecomeHostInput{
         picture: Upload!

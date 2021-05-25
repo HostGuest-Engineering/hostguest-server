@@ -10,7 +10,7 @@ const passport = require('passport');
 const helmet = require('helmet');
 const expressJwt = require('express-jwt');
 const app = express();
-const {Session,Users} = require("./controllers");
+const {Session,Users,ExperiencesApi} = require("./controllers");
 const UserModel = require('./datasources/Users/UserModel');
 const makeUploadsDir = require('./utils/createFolder');
 
@@ -71,7 +71,8 @@ const server = new ApolloServer({
     dataSources: () => {
        return { 
            sessionApi:new Session(),
-           userApi:new Users()
+           userApi:new Users(),
+           experiencesApi: new ExperiencesApi()
         }
     },
     context:async({req,connection,res})=>{
