@@ -38,8 +38,11 @@ class Users {
                     format: 'jpg'
                 };
                 //const userPicturePath = process.cwd()+"/uploads/"+pictureFileName;
-                const imageUploadResponse = await cloudinary.uploader.upload(`https://f0c5800dab76.ngrok.io/${pictureFileName}`, {tags: "user-profile-pic",eager: eager_options});
-                const response = await UserModel.updateOne({_id:found._id},{
+                const imageUploadResponse = await cloudinary.uploader.upload(`${process.env.PATH_TO_IMAGE_UPLOAD}/${pictureFileName}`, {
+                    tags: "user-profile-pic",
+                    eager: eager_options
+                });
+                await UserModel.updateOne({_id:found._id},{
                     picture:imageUploadResponse.eager[0].secure_url,
                     host:1,
                     description:aboutSelf,

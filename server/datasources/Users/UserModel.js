@@ -43,6 +43,12 @@ const UserSchema = new Schema({
     hostBrand:{
         type:String
     },
+    joinedExperiences:[
+        {
+            type:Schema.Types.String,
+            ref: "Experiences"
+        }
+    ],
     createdAt:{
         type:Date,
         default:Date.now()
