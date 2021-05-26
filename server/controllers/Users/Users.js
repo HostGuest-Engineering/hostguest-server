@@ -38,7 +38,7 @@ class Users {
                     format: 'jpg'
                 };
                 //const userPicturePath = process.cwd()+"/uploads/"+pictureFileName;
-                const imageUploadResponse = await cloudinary.uploader.upload(`https://c3a46a510e5a.ngrok.io/${pictureFileName}`, {
+                const imageUploadResponse = await cloudinary.uploader.upload(`${process.env.PATH_TO_IMAGE_UPLOAD}/${pictureFileName}`, {
                     tags: "user-profile-pic",
                     eager: eager_options
                 });

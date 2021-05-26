@@ -164,6 +164,9 @@ class ExperiencesApi {
         try{
             //lets get the id of the user
             const {id} = args;
+            if(found.host === 1){
+                throw new Error("Cannot book own experience")
+            }
             await ExperiencesModel.findById({_id:id})
             .exec((err,experiences)=>{
                 experiences.joinedPeople.push(found);
@@ -192,6 +195,7 @@ class ExperiencesApi {
         }
         try{
             const {id} = args;
+            
             const experiencesPromise = new Promise(async(resolve,reject)=>{
                 resolve(await ExperiencesModel.updateOne({_id:id},{
                     $pull:{joinedPeople:found},
@@ -230,7 +234,8 @@ class ExperiencesApi {
                 userBrings,
                 datesOfExperience
             }} = args;
-            if(found._id === experienceAuthor._id){
+            const result = await ExperiencesModel.findById({_id:id});
+            if(found._id === result.experienceAuthor._id){
                 const response = await ExperiencesModel.updateOne({_id:id},{
                     $set:{
                         nameOfExperience,
