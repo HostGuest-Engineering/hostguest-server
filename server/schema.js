@@ -2,24 +2,11 @@ const {gql} = require("apollo-server-express");
 
 const typeDefs = gql `
 
-    enum ExperiencesCategory{
-        SportsAndHealth
-        MusicAndDance
-        ArtsCraftAndCulture
-        Adventure
-        NightLifeAndParties
-        ImprovMagicAndComedy
-        ScifiAndGames
-        WellnessAndSpirituality
-        FoodAndDrink
-        SocialGood
-        LecturesAndWorkshops
-    }
     type Query{
         simp:Result
         userDetails: [UserDetails]!
-        fetchAllExperiences:Result
-        findExperienceById(id:String):Result
+        fetchAllExperiences:[FetchExperiencesResult]!
+        findExperienceById(id:String):FindSingleExperience!
     }
 
     type Mutation{
@@ -29,21 +16,26 @@ const typeDefs = gql `
         signUp(input:SignUpInput!):Result
         logOut:AuthResults
         becomeAHost(input: BecomeHostInput!): Result
-        createExperience(input:CreateExperienceInput!):Result
+        createExperience(input:CreateExperienceInput!):CreateExperienceResponse!
         multiUpload(files:[Upload]):Result
         bookExperience(id:String):Result
         leaveExperience(id:String):Result
     }
     input CreateExperienceInput{
+        detailsOfExperience:DetailsOfExperienceInput!
+        imagesOfExperience:[Upload]!
+        
+    }
+    input DetailsOfExperienceInput{
+        duration:String!
+        category:String!
+        userBrings:[String]
+        datesOfExperience:[String]!
         nameOfExperience:String!
         descriptionOfExperience:String!
         numberOfPeopleAllowed:Int!
-        price:String!
-        imagesOfExperience:[Upload]
-        duration:String!
-        category:ExperiencesCategory!
-        userBrings:[String]
-        datesOfExperience:[String]!
+        price:Int!
+        subcategory:String!
     }
     input BecomeHostInput{
         picture: Upload!
@@ -85,6 +77,78 @@ const typeDefs = gql `
         name:String!
         email:String!
         mobile:String!
+    }
+    type CreateExperienceResponse{
+        joinedPeople:[String]
+        imagesOfExperience:[String]
+        userBrings:[String]
+        status:String
+        datesOfExperience:[String]
+        createdAt:String
+        _id:String
+        nameOfExperience:String
+        descriptionOfExperience:String
+        numberOfPeopleAllowed:Int
+        price:String
+        duration:String
+        category:String
+        subcategory:String
+        experienceAuthor:String
+    }
+    type FetchExperiencesResult{
+        joinedPeople:[String]
+        imagesOfExperience:[String]
+        userBrings:[String]
+        status:String
+        datesOfExperience:[String]
+        createdAt:String
+        updatedAt:String
+        _id:String
+        nameOfExperience:String
+        descriptionOfExperience:String
+        numberOfPeopleAllowed:Int
+        price:String
+        experienceAuthor:ExperienceCreator!
+        duration:String
+        category:String
+        subcategory:String
+    }
+    type ExperienceCreator {
+        host: Int
+        _id: String
+        name: String
+        email: String
+        mobile: String
+        description: String
+        hostBrand: String
+        location: String
+        picture: String
+    }
+    type FindSingleExperience{
+        joinedPeople:[JoinedPeopleResult]!
+        imagesOfExperience:[String]
+        userBrings:[String]
+        status:String
+        datesOfExperience:[String]
+        createdAt:String
+        updatedAt:String
+        _id:String
+        nameOfExperience:String
+        descriptionOfExperience:String
+        numberOfPeopleAllowed:Int
+        price:String
+        experienceAuthor:ExperienceCreator!
+        duration:String
+        category:String
+        subcategory:String
+    }
+    type JoinedPeopleResult {
+        host:String
+        joinedExperiences:[String]
+        _id:String
+        name:String 
+        email:String
+        mobile:String
     }
 `;
 

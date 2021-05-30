@@ -51,16 +51,20 @@ class ExperiencesApi {
         }
         try{
             const {input:{
-                nameOfExperience,
-                descriptionOfExperience,
-                numberOfPeopleAllowed,
-                price,
                 imagesOfExperience,
-                duration,
-                category,
-                userBrings,
-                datesOfExperience
+                detailsOfExperience:{
+                    descriptionOfExperience,
+                    numberOfPeopleAllowed,
+                    price,
+                    nameOfExperience,
+                    duration,
+                    category,
+                    userBrings,
+                    datesOfExperience,
+                    subcategory
+                }
             }} = args;
+            
             const userResponse = await UserModel.findOne({_id:found._id});
 
             if(userResponse.host === 0){
@@ -69,47 +73,50 @@ class ExperiencesApi {
 
             //lets upload images 😎
             //first create directory for experience images, separate from host or guest
-            // const uploadPath = process.cwd() + "/uploads/" + 'experiences/'+found._id;
-            // makeUploadsDir(uploadPath);
-            // const fileNames = await ExperiencesApi.getFileNameFromUpload(imagesOfExperience);
-            // const uploads = await ExperiencesApi.uploadFileToFileSystem(imagesOfExperience, uploadPath, fileNames);
-            let a = 1+1;
-            Promise.all([a])
+            const uploadPath = process.cwd() + "/uploads/" + 'experiences';
+            makeUploadsDir(uploadPath);
+            const fileNames = await ExperiencesApi.getFileNameFromUpload(imagesOfExperience);
+            const uploads = await ExperiencesApi.uploadFileToFileSystem(imagesOfExperience, uploadPath, fileNames);
+            let imagesUploadResponse = [];
+            let response = {};
+            Promise.all([uploads])
                 .then(async () => {
                     //lets now upload to cloudinary
-                    // let imagesUploadResponse = [];
-                    // if (Array.isArray(fileNames) && fileNames.length > 0) {
-                    //     for (let i = 0; i < fileNames.length; i++) {
-                    //         let response = await cloudinary.uploader.upload(`https://d03bc4512c46.ngrok.io/experiences/${found._id}/${fileNames[i]}`, {
-                    //             tags: "experiences-uploads"
-                    //         })
-                    //         imagesUploadResponse.push(response.secure_url)
-                    //     }
-                    // }
-
-                    //now we upload to mongodb
-                    const experiencesData = new ExperiencesModel({
-                        _id: uuidv4(),
-                        nameOfExperience,
-                        descriptionOfExperience,
-                        numberOfPeopleAllowed,
-                        price,
-                        experienceAuthor:found,
-                        // imagesOfExperience: imagesUploadResponse,
-                        duration,
-                        category,
-                        userBrings,
-                        datesOfExperience
-                    });
-
-                    const response = await experiencesData.save();
-                    //remember to return the data uploaded
-                    console.log(response)
-                    return {
-                        status:true,
-                        message:"successful"
+                    if (Array.isArray(fileNames) && fileNames.length > 0) {
+                        for (let i = 0; i < fileNames.length; i++) {
+                            let response = await cloudinary.uploader.upload(`${process.env.PATH_TO_EXPERIENCE_IMAGE_UPLOAD}/experiences/${fileNames[i]}`, {
+                                tags: "experiences-uploads"
+                            })
+                            imagesUploadResponse.push(response.secure_url)
+                        }
                     }
-                });
+                    
+                 })
+                 .then(async()=>{
+                     //now after uploading images to cloudinary, we then create the experience
+                     //now we upload to mongodb
+                     const experiencesData = new ExperiencesModel({
+                         _id: uuidv4(),
+                         nameOfExperience,
+                         descriptionOfExperience,
+                         numberOfPeopleAllowed,
+                         price:price.toString(),
+                         experienceAuthor:found,
+                         imagesOfExperience: imagesUploadResponse,
+                         duration,
+                         category,
+                         userBrings,
+                         datesOfExperience,
+                         subcategory
+                     });
+
+                     response = await experiencesData.save();
+                     // //remember to return the data uploaded
+                 })
+                 .catch(e=>{
+                     throw new Error(e.message)
+                 })
+                 return response;
         }
         catch(e){
             throw new Error(e.message)
@@ -124,11 +131,7 @@ class ExperiencesApi {
         try{
             const response = await ExperiencesModel.find().populate('experienceAuthor').sort({createdAt:-1});
             //remember to return the data uploaded
-            console.log(response)
-            return {
-                status:true,
-                message:"Success"
-            }
+            return response;
 
         }catch(e){
             throw new Error(e.message)
@@ -145,12 +148,7 @@ class ExperiencesApi {
             .populate('experienceAuthor')
             .populate('joinedPeople')
             .sort({createdAt:-1});
-
-            console.log(response);
-            return {
-                status:true,
-                message:"success"
-            }
+            return response;
         }catch(e){
             throw new Error(e.message)
         }
