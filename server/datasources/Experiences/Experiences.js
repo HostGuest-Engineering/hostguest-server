@@ -39,8 +39,16 @@ const experienceSchema = new Schema({
         type:String,
         required:true,
     },
+    subcategory: {
+        type: String,
+        required: true,
+    },
     userBrings:{
         type:[String],
+    },
+    status:{
+        type:String,
+        default:'pending'
     },
     experienceAuthor:{
         type:Schema.Types.String,
