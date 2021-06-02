@@ -49,6 +49,11 @@ const UserSchema = new Schema({
             ref: "Experiences"
         }
     ],
+    datesAttending:[{
+        day:String,
+        startTime:String,
+        endTime:String
+    }],
     createdAt:{
         type:Date,
         default:Date.now()

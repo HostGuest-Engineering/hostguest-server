@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
 const mongoose = require('mongoose');
-const passport = require('passport');
 const helmet = require('helmet');
 const expressJwt = require('express-jwt');
 const app = express();
