@@ -1,11 +1,9 @@
 const { createLogger, format } = require('winston');
 const DailyLog = require('winston-daily-rotate-file');
-const config = require('dotenv');
+require("dotenv").config();
 const _ = require('lodash');
 const getTimeStamp = require("./getTimestamp");
 
-config.config();
-const configValues = process.env;
 const {
   combine, timestamp, label, printf,
 } = format;
@@ -55,7 +53,7 @@ const timezoned = () => new Date().toLocaleString('en-US', {
 });
 
 const logFormat = printf(({ level, message, ...meta }) => (`${logStringBuilder(meta, message, level)}`));
-const logFilePath = configValues.LOG_PATH;
+const logFilePath = process.env.LOG_PATH;
 
 const logger = createLogger({
   transports: [

@@ -57,14 +57,12 @@ class ExperiencesApi {
                     numberOfPeopleAllowed,
                     price,
                     nameOfExperience,
-                    duration,
                     category,
                     userBrings,
                     datesOfExperience,
                     subcategory
                 }
             }} = args;
-            
             const userResponse = await UserModel.findOne({_id:found._id});
 
             if(userResponse.host === 0){
@@ -103,7 +101,6 @@ class ExperiencesApi {
                          price:price.toString(),
                          experienceAuthor:found,
                          imagesOfExperience: imagesUploadResponse,
-                         duration,
                          category,
                          userBrings,
                          datesOfExperience,
@@ -129,8 +126,7 @@ class ExperiencesApi {
         }
 
         try{
-            const response = await ExperiencesModel.find().populate('experienceAuthor').sort({createdAt:-1});
-            //remember to return the data uploaded
+            const response = await ExperiencesModel.find().populate('experienceAuthor').populate('joinedPeople').sort({createdAt:-1});
             return response;
 
         }catch(e){
@@ -161,17 +157,24 @@ class ExperiencesApi {
 
         try{
             //lets get the id of the user
-            const {id} = args;
+            /**
+             * dates is an array containing dates booked/selected by the guest
+             */
+            const {id,dates} = args;
             if(found.host === 1){
                 throw new Error("Cannot book own experience")
             }
+
             await ExperiencesModel.findById({_id:id})
             .exec((err,experiences)=>{
                 experiences.joinedPeople.push(found);
-                experiences.numberOfPeopleAllowed++;
+                experiences.peopleWhoBooked++;
                 const updateUser = new Promise(async(resolve,reject)=>{
                     resolve(await UserModel.updateOne({_id:found._id},{
-                        $push: {joinedExperiences:experiences}
+                        $push: {
+                            datesAttending: dates,
+                            joinedExperiences: experiences
+                        }
                     }))
                 })
                 Promise.all([experiences.save(),updateUser]);
@@ -197,7 +200,7 @@ class ExperiencesApi {
             const experiencesPromise = new Promise(async(resolve,reject)=>{
                 resolve(await ExperiencesModel.updateOne({_id:id},{
                     $pull:{joinedPeople:found},
-                    $inc:{numberOfPeopleAllowed:-1}
+                    $inc:{peopleWhoBooked:-1}
                 }))
             });
             const userPromise = new Promise(async(resolve,reject)=>{
@@ -226,6 +229,7 @@ class ExperiencesApi {
                 descriptionOfExperience,
                 numberOfPeopleAllowed,
                 price,
+                subcategory,
                 //imagesOfExperience: imagesUploadResponse,
                 duration,
                 category,
@@ -243,6 +247,7 @@ class ExperiencesApi {
                         imagesOfExperience: imagesUploadResponse,
                         duration,
                         category,
+                        subcategory,
                         userBrings,
                         datesOfExperience
                     }

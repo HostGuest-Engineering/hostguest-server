@@ -17,6 +17,10 @@ const experienceSchema = new Schema({
         type:Number,
         max:45
     },
+    peopleWhoBooked:{
+        type:Number,
+        default:0
+    },
     joinedPeople:[
         {
             type:Schema.Types.String,
@@ -33,7 +37,7 @@ const experienceSchema = new Schema({
     },
     duration:{
         type:String,
-        required:true
+        required:false
     },
     category:{
         type:String,
@@ -55,10 +59,12 @@ const experienceSchema = new Schema({
         ref: 'User',
         required:true
     },
-    datesOfExperience:{
-        type:[Date],
-        required:true
-    },
+    datesOfExperience:[{
+        day:String,
+        startTime:String,
+        endTime:String,
+        timeDifference: Number
+    }],
     createdAt:{
         type:Date,
         default:Date.now()

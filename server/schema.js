@@ -16,10 +16,15 @@ const typeDefs = gql `
         signUp(input:SignUpInput!):Result
         logOut:AuthResults
         becomeAHost(input: BecomeHostInput!): Result
-        createExperience(input:CreateExperienceInput!):CreateExperienceResponse!
+        createExperience(input:CreateExperienceInput!):CreateExperienceResponse
         multiUpload(files:[Upload]):Result
-        bookExperience(id:String):Result
-        leaveExperience(id:String):Result
+        bookExperience(id:String!,dates:[DatesOfBooking]!):Result
+        leaveExperience(id:String!):Result
+    }
+    input DatesOfBooking {
+        day:String
+        startTime:String
+        endTime:String
     }
     input CreateExperienceInput{
         detailsOfExperience:DetailsOfExperienceInput!
@@ -27,15 +32,20 @@ const typeDefs = gql `
         
     }
     input DetailsOfExperienceInput{
-        duration:String!
         category:String!
         userBrings:[String]
-        datesOfExperience:[String]!
+        datesOfExperience:[DatesOfExperienceInput]!
         nameOfExperience:String!
         descriptionOfExperience:String!
         numberOfPeopleAllowed:Int!
         price:Int!
         subcategory:String!
+    }
+    input DatesOfExperienceInput{
+        day: String!
+        startTime: String!
+        endTime: String!
+        timeDifference:Int!
     }
     input BecomeHostInput{
         picture: Upload!
