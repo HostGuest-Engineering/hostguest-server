@@ -2,7 +2,7 @@ require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const {v4: uuidv4} = require('uuid');
 const {AuthenticationError} = require("apollo-server-express");
-const {parse} = require('path');
+const path = require('path');
 const ExperiencesModel = require('../../datasources/Experiences/Experiences');
 const UserModel = require('../../datasources/Users/UserModel');
 const createFile = require('../../utils/createFile');
@@ -15,35 +15,6 @@ cloudinary.config({
 });
 
 class ExperiencesApi {
-
-    // async multiUpload(args){
-    //     const {files} = args;
-    //     const uploadPath = process.cwd() + "/uploads/" + 'experiences';
-    //     makeUploadsDir(uploadPath);
-    //     const fileNames = await ExperiencesApi.getFileNameFromUpload(files);
-    //     const uploads = await ExperiencesApi.uploadFileToFileSystem(files,uploadPath,fileNames);
-    //     Promise.all([uploads])
-    //     .then(async()=>{
-    //         //lets now upload to cloudinary
-    //         let imagesUploadResponse = [];
-    //         if (Array.isArray(fileNames) && fileNames.length > 0) {
-    //             for (let i = 0; i < fileNames.length; i++) {
-    //                 let response = await cloudinary.uploader.upload(`https://d03bc4512c46.ngrok.io/experiences/${fileNames[i]}`, {
-    //                     tags: "experiences-uploads"
-    //                 })
-    //                 imagesUploadResponse.push(response.secure_url)
-    //             }
-    //         }
-    //         console.log(imagesUploadResponse);
-    //     })
-    //     .catch(e=>{
-    //         throw new Error(e.message)
-    //     })
-    //     return {
-    //         status:true,
-    //         message:'Successful'
-    //     }
-    // }
 
     async createExperience(args,found){
         if(!found){
@@ -63,9 +34,8 @@ class ExperiencesApi {
                     subcategory
                 }
             }} = args;
-            const userResponse = await UserModel.findOne({_id:found._id});
 
-            if(userResponse.host === 0){
+            if(found.host === 0){
                 throw new AuthenticationError('You are not authorized to create an experience')
             }
 
@@ -77,12 +47,14 @@ class ExperiencesApi {
             const uploads = await ExperiencesApi.uploadFileToFileSystem(imagesOfExperience, uploadPath, fileNames);
             let imagesUploadResponse = [];
             let response = {};
+            const pathToExp = path.join(process.cwd(),'uploads','experiences');
+            console.log(path.resolve(pathToExp))
             Promise.all([uploads])
                 .then(async () => {
                     //lets now upload to cloudinary
                     if (Array.isArray(fileNames) && fileNames.length > 0) {
                         for (let i = 0; i < fileNames.length; i++) {
-                            let response = await cloudinary.uploader.upload(`${process.env.PATH_TO_EXPERIENCE_IMAGE_UPLOAD}/experiences/${fileNames[i]}`, {
+                            let response = await cloudinary.uploader.upload(path.resolve(path.join(pathToExp,fileNames[i])), {
                                 tags: "experiences-uploads"
                             })
                             imagesUploadResponse.push(response.secure_url)
