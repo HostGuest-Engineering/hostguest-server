@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+  <title>HostGuest</title>
+  <style>
+      body{
+        margin: 0;
+        overflow:hidden;
+        padding:0;
+        box-sizing: border-box;
+        overflow-y:auto;
+        font-family: 'Nunito', sans-serif;
+      }
+      .main{
+          display:flex;
+          justify-content:flex-start;
+          align-items:flex-start;
+          flex-direction:column;
+          width:100%;
+          
+      }
+      .firstRow{
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          flex-direction:row;
+          width:100vw;
+      }
+      .contentA{
+          display:flex;
+          justify-content:center;
+          align-items:flex-start;
+          flex-direction:column;
+          margin:0 0 0 5rem
+      }
+      .contentB{
+          display:flex;
+          justify-content:center;
+          align-items:flex-end;
+          flex-direction:column;
+          /* margin:0 5rem 0 0; */
+      }
+      .secondMainContainer{
+          display:flex;
+          justify-content:flex-start;
+          align-items:flex-start;
+          flex-direction:column;
+      }
+      .columnContent{
+          display:flex;
+          justify-content:space-between;
+          align-items:flex-start;
+          flex-direction:row;
+          gap:10px;
+      }
+      .inlineValues{
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          flex-direction:row;
+      }
+      .secondRow{
+          display:flex;
+          justify-content:space-between;
+          align-items:flex-start;
+          flex-direction:row;
+          width:100vw;
+          flex-wrap:wrap;
+      }
+      .dates{
+          display:flex;
+          justify-content:flex-start;
+          align-items:flex-start;
+          flex-direction:row;
+          width:100vw;
+          flex-wrap:wrap;
+          gap:10px;
+      }
+      .trans{
+          display:flex;
+          /* justify-content:space-between; */
+          gap:12px;
+          align-items:flex-start;
+          flex-direction:row;
+          width:100vw;
+          flex-wrap:wrap;
+      }
+      .operatingTools{
+          display:flex;
+          justify-content:flex-start;
+          align-items:flex-start;
+          flex-direction:row;
+          width:100vw;
+      }
+      .defineMarginLeft{
+        margin:0 0 0 5rem;
+      }
+      .defineMarginRight{
+        margin:0 5rem 0 0;
+      }
+      .commonFont{
+          font-size:1.5rem;
+          color:#e71575;
+      }
+      .firstText{
+        font-weight:900;
+        font-size:1rem;
+        margin-right:2px;
+      }
+      .secondText{
+          font-size:1rem;
+      }
+      .headerText{
+          font-size:1rem;
+          font-weight:900;
+          margin-top:20px;
+          color:#e71575;
+      }
+      .removeMargin{
+          margin:0;
+      }
+      p,span{
+          line-height:1px;
+      }
+  </style>
+</head>
+<body>
+    <div class="main">
+        <section>
+            <div class="firstRow">
+                <div class="contentA">
+                    <h1 class="commonFont" style="word-break: normal;width:200px">Experience Creation Form</h1>
+                </div>
+                <div class="contentB">
+                    <img style="margin-top: 20px;" src={{hostGuestExperience.logo}} height="100" width="200" />
+                    <p style="font-weight:900">{{hostGuestExperience.date}}</p>
+                    <p style="font-weight:900">{{hostGuestExperience.uniqueNumber}}</p>
+                </div>
+            </div>
+            <hr style=" margin:0 0 0 5rem;border-color:#e71575;width:90%"; />
+        </section>
+        <section>
+            <div class="secondMainContainer">
+                <div class=" headerText">
+                    <p class="defineMarginLeft">Your Details</p>
+                    <hr style="border-color:#e71575;width:50%;margin-left:81px" />
+                </div>
+                <div class="secondRow defineMarginLeft">
+                    <div class="columnContent">
+                        <div class="inlineValues">
+                            <p class="firstText">Name:</p>
+                            <p class="secondText"> {{hostGuestExperience.userName}}</p>
+                        </div>
+                        <div class="inlineValues">
+                            <p class="firstText">Email:</p>
+                            <p class="secondText"> {{hostGuestExperience.userEmail}}</p>
+                        </div>
+                        <div class="inlineValues">
+                            <p class="firstText">Mobile No.:</p>
+                            <p class="secondText"> {{hostGuestExperience.userMobileNo}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="secondMainContainer">
+                <div class="secondMainContainer headerText">
+                    <p class="defineMarginLeft">Experience Details</p>
+                    <hr style="border-color:#e71575;width:67%;margin-left:81px" />
+                </div>
+                <div class="trans defineMarginLeft">
+                        <div class="inlineValues">
+                            <p class="firstText">Name Of Experience:</p>
+                            <p class="secondText">{{hostGuestExperience.nameOfExperience}}</p>
+                        </div>
+                        <div class="inlineValues">
+                            <p class="firstText">Category:</p>
+                            <p class="secondText">{{hostGuestExperience.category}}</p>
+                        </div>
+                        <div class="inlineValues">
+                            <p class="firstText">Sub Category:</p>
+                            <p class="secondText">{{hostGuestExperience.subcategory}}</p>
+                        </div>
+                        <div class="inlineValues">
+                            <p class="firstText">Price:</p>
+                            <p class="secondText">KES {{hostGuestExperience.price}}</p>
+                        </div>
+                        <div class="inlineValues">
+                            <p class="firstText">Number Of People Allowed:</p>
+                            <p class="secondText"> {{hostGuestExperience.numberOfPeopleAllowed}}</p>
+                        </div>
+                        
+                </div>
+            </div>
+            <div class="secondMainContainer">
+                <div class="defineMarginLeft headerText">
+                    <p class="">Descrption Of Experience:</p>
+                </div>
+                <div>
+                    <p style="line-height:20px" class="secondText defineMarginLeft"> {{hostGuestExperience.descriptionOfExperience}}</p>
+                </div>
+            </div>
+            <div class="secondMainContainer">
+                <div class="defineMarginLeft headerText">
+                    <p class="">User Brings:</p>
+                </div>
+                {{#each hostGuestExperience.userBrings}}
+                <p style="line-height:15px;" class=" defineMarginLeft secondText"> {{this.key}}</p>
+                {{/each}}
+            </div>
+            <div class="secondMainContainer">
+                <div class="defineMarginLeft headerText">
+                    <p class="">Dates Of Experience</p>
+                </div>
+                {{#each hostGuestExperience.datesOfExperience}}
+                <div class="defineMarginLeft dates">
+                    <div class="inlineValues">
+                        <p class="firstText">Day:</p>
+                        <p class="secondText"> {{this.day}}</p>
+                    </div>
+                    <div class="inlineValues">
+                        <p class="firstText">Start Time:</p>
+                        <p class="secondText"> {{this.startTime}}</p>
+                    </div>
+                    <div class="inlineValues">
+                        <p class="firstText">End Time:</p>
+                        <p class="secondText"> {{this.endTime}}</p>
+                    </div>
+                    <div class="inlineValues">
+                        <p class="firstText">Duration:</p>
+                        <p class="secondText"> {{this.timeDifference}} minutes</p>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </section>
+    </div>
+    <!-- <footer style="position:fixed;bottom:0;width:100%;" class="secondMainContainer">
+       <img src={{konnectAboutSelf.footer}} />
+    </footer> -->
+</body>
+</html>

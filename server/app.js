@@ -19,7 +19,11 @@ const configValues = process.env;
 //create uploads dir if none exist
 const uploadsDir = `${process.cwd()}/uploads`;
 makeUploadsDir(uploadsDir);
+
+//serve up static files
 app.use(express.static(path.join(process.cwd(),'uploads')));
+app.use(express.static(path.join(__dirname,'utils')));
+
 const listOfOriginsAllowed = process.env.ORIGIN.split(',');
 
 const options = {

@@ -2,11 +2,14 @@ require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const {v4: uuidv4} = require('uuid');
 const {AuthenticationError} = require("apollo-server-express");
+const shortId = require("shortid");
 const path = require('path');
+const {format} = require("date-fns");
 const ExperiencesModel = require('../../datasources/Experiences/Experiences');
 const UserModel = require('../../datasources/Users/UserModel');
 const createFile = require('../../utils/createFile');
 const makeUploadsDir = require('../../utils/createFolder');
+const generatePdf = require('../../utils/generatePdf');
 
 cloudinary.config({
     cloud_name: 'liveservers',
@@ -47,14 +50,13 @@ class ExperiencesApi {
             const uploads = await ExperiencesApi.uploadFileToFileSystem(imagesOfExperience, uploadPath, fileNames);
             let imagesUploadResponse = [];
             let response = {};
-            const pathToExp = path.join(process.cwd(),'uploads','experiences');
-            console.log(path.resolve(pathToExp))
+            let uniqueNumber = shortId.generate();
             Promise.all([uploads])
                 .then(async () => {
                     //lets now upload to cloudinary
                     if (Array.isArray(fileNames) && fileNames.length > 0) {
                         for (let i = 0; i < fileNames.length; i++) {
-                            let response = await cloudinary.uploader.upload(path.resolve(path.join(pathToExp,fileNames[i])), {
+                            let response = await cloudinary.uploader.upload(`${process.env.PATH_TO_EXPERIENCE_IMAGE_UPLOAD}/experiences/${fileNames[i]}`, {
                                 tags: "experiences-uploads"
                             })
                             imagesUploadResponse.push(response.secure_url)
@@ -76,11 +78,39 @@ class ExperiencesApi {
                          category,
                          userBrings,
                          datesOfExperience,
-                         subcategory
+                         subcategory,
+                         uniqueNumber
                      });
 
                      response = await experiencesData.save();
+                     console.log(response)
                      // //remember to return the data uploaded
+                 })
+                 .then(async()=>{
+                     //generate and send pdf
+                    const printData = {
+                        hostGuestExperience:{
+                            descriptionOfExperience,
+                            numberOfPeopleAllowed,
+                            price,
+                            nameOfExperience,
+                            category,
+                            userBrings:(Array.isArray(userBrings) && userBrings.length > 0) ? userBrings.map(item=>ExperiencesApi.addKey(item)):[],
+                            datesOfExperience,
+                            subcategory,
+                            uniqueNumber,
+                            userName:found.name,
+                            date:format(new Date(),'dd MMM yyyy'),
+                            userEmail:found.email,
+                            userMobileNo:found.mobile,
+                            logo:process.env.HOSTGUEST_LOGO
+                        }
+                    }
+                    const pdfName = "HostGuestExperienceCreation.pdf";
+                    const outputPath = path.resolve(path.join(process.cwd(),"uploads"));
+                    const htmlContent = path.resolve('./server/utils/template.html');
+                    console.log(outputPath,htmlContent);
+                    await generatePdf(htmlContent,printData,pdfName,outputPath);
                  })
                  .catch(e=>{
                      throw new Error(e.message)
@@ -281,6 +311,12 @@ class ExperiencesApi {
                 }
             }
         });
+    }
+
+    static addKey(item){
+        return {
+            key:item
+        }
     }
 }
 

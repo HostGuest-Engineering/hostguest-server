@@ -50,6 +50,9 @@ const experienceSchema = new Schema({
     userBrings:{
         type:[String],
     },
+    uniqueNumber:{
+        type:String
+    },
     status:{
         type:String,
         default:'pending'
